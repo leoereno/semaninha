@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme{
+    --color-creative-green: (#32CD32)
+    --color-romantic-pink: (#ff91a4)
+}
+
+
+body{
+    background-color: #000000;
+}

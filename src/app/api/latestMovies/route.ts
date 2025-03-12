@@ -16,6 +16,7 @@ type ResponseData = {
   movies?: Movie[];
   message?: string;
   dataUri?: string;
+  username?: string;
 };
 
 async function downloadImageAsBuffer(url: string) {
@@ -28,23 +29,63 @@ async function downloadImageAsBuffer(url: string) {
   }
 }
 
+function getColumn(num: number){
+  const isEven = num % 2 == 0;
+  let i = 5;
+  if(num > 28)
+    i = 7;
+  if(isEven){
+    while(num % i != 0 && (i != num/i))
+      i++;
+  } else{
+    //i = 5;
+    while (num % i != i - 1){
+      i++;
+    }
+  }
+  return i;
+}
+
+async function compressImage(img: Buffer<any>, ratio: number = 0.5){
+  const compressedImage = await sharp(img).resize(300, 450, {
+    fit: 'cover'
+  }).jpeg({quality: 80})
+  .toBuffer();
+
+  return compressedImage;
+}
+
 async function joinImagesFromBuffer(validBuffers: Buffer<any>[]) {
 
-  const crop = async (e: Buffer<any>) => {
-    const square = await sharp(e).resize(300, 300, {
-      fit: 'contain',
-      background: {r:255,g:255,b:255}
-    })
-    .jpeg({quality: 90})
-    .toBuffer()
-    return square;
+  let img: sharp.Sharp | undefined = undefined;
+  const compressedBuffers = await Promise.all(validBuffers.map(compressImage));
+  if(compressedBuffers.length < 5){
+      img = await joinImages(compressedBuffers, {
+        direction: 'horizontal'
+      });
+  } else{
+    const evenSize = compressedBuffers.length % 2 == 0;
+    
+    let slices: Array<Buffer<any>> = [];
+    let lastIndex: number = 0;
+    let columns = compressedBuffers.length > 18 ? /*Math.ceil(compressedBuffers.length/4)*/getColumn(compressedBuffers.length) : 4;
+    //let columns = compressedBuffers.length/4;
+    for(let i=0; i<compressedBuffers.length; i = i+columns){
+      // console.log(i, compressedBuffers.length);
+      if(i+columns-1 > compressedBuffers.length - 1) lastIndex = compressedBuffers.length
+      else lastIndex = i+columns
+      let row = await joinImages(compressedBuffers.slice(i, lastIndex), {
+        direction:'horizontal'
+      });
+      let rowJpg = row.jpeg();
+      let rowBuffer = await rowJpg.toBuffer();
+      slices.push(rowBuffer);
+    }
+    img = await joinImages(slices, {
+      direction:'vertical'
+    });
   }
 
-  const squareBuffers = await Promise.all(validBuffers.map(crop))
-
-  const img = await joinImages(validBuffers, {
-    direction: 'horizontal'
-  });
   const imgJpeg = img.toFormat("jpeg");
   const imgBuffer = await imgJpeg.toBuffer();
   return imgBuffer;
@@ -57,7 +98,7 @@ export async function GET(
 ) {
   if (req.method === "GET") {
     const username = req.nextUrl.searchParams.get("username");
-    const movieCount = Number(req.nextUrl.searchParams.get("movieCount")) || 10;
+    const movieCount = Number(req.nextUrl.searchParams.get("movieCount")) || 30;
     const timeSpanInDays =
       Number(req.nextUrl.searchParams.get("timeSpan")) || 30;
     const feedUrl = `https://letterboxd.com/${username}/rss/`;
@@ -79,11 +120,14 @@ export async function GET(
 
       items.forEach((item, index) => {
         if (index < movieCount) {
-          const title = item
-            .querySelector("title")!
-            .textContent?.split("-")
-            .slice(0, -1)
-            .join(" ");
+          // const title = item
+          //   .querySelector("title")!
+          //   .textContent?.split("-")
+          //   .slice(0, -1)
+          //   .join(" ");
+
+            const title = item
+            .querySelector("title")!.textContent;
 
           const link = item.querySelector("link")!.textContent;
           const pubDate = new Date(
@@ -97,6 +141,7 @@ export async function GET(
             description.window.document.querySelector("img")!.src;
 
           const id = index;
+          
           if (
             (new Date().getTime() - pubDate.getTime()) /
             (1000 * 60 * 60 * 24) <=
@@ -108,7 +153,7 @@ export async function GET(
           }
         }
       });
-      //console.log(movies)
+      // console.log(movies)
       //JOINING IMAGES
       const imageBuffers = await Promise.all(imagesUrl.map(downloadImageAsBuffer))
       const validBuffers = imageBuffers.filter(buffer => buffer !== null)
@@ -116,7 +161,7 @@ export async function GET(
       const base64 = joinedImage.toString('base64');
       const dataURI = `data:image/jpeg;base64,${base64}`;
 
-      return Response.json({ movies: movies, dataURI: dataURI });
+      return Response.json({ movies: movies, dataURI: dataURI, username: username });
     } catch (error) {
       console.error(error);
       return Response.json({ movies: [], message: "Internal Error" });
