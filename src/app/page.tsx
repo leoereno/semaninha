@@ -1,12 +1,10 @@
 "use client";
 import { useState } from "react";
-import { Movie } from "./api/latestMovies/route";
-
+import Image from "next/image";
 export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const [username, setUsername] = useState<string>("");
   const [joinedImage, setJoinedImage] = useState<string>("");
-  const [error, setError] = useState(false);
   const [resultUsername, setResultUsername] = useState<string>("");
 
   const handleClick = async () => {
@@ -15,9 +13,7 @@ export default function Home() {
     if (response) {
       const data = await response.json();
       if (data.message != undefined) {
-        setError(true);
         alert("Error fetching user data! Please check username and try again.");
-        setError(false);
       } else {
         setResultUsername(data.username);
         setJoinedImage(data.dataURI);
@@ -62,7 +58,7 @@ export default function Home() {
             <p className="text-white">
               Last month for <b>{resultUsername}</b>
             </p>
-            <img src={joinedImage} alt="" width={400} className="p-4 shadow-2xl" />
+            <Image src={joinedImage} alt="Movie tiles recap" width={400} height={500} className="p-4 shadow-2xl" />
             <a download={"month.jpg"} href={joinedImage} className="text-gray-300 text-sm mb-5" title="Download">Download</a>
             <button onClick={handleReset} className="text-white border-2 rounded-2xl pr-6 pl-6">Back</button>
           </div>

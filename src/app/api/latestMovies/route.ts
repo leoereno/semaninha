@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { JSDOM } from "jsdom";
 import axios from "axios";
 import joinImages from "join-images";
@@ -12,12 +12,12 @@ export type Movie = {
   posterUrl: string;
 };
 
-type ResponseData = {
-  movies?: Movie[];
-  message?: string;
-  dataUri?: string;
-  username?: string;
-};
+// type ResponseData = {
+//   movies?: Movie[];
+//   message?: string;
+//   dataUri?: string;
+//   username?: string;
+// };
 
 async function downloadImageAsBuffer(url: string) {
   try {
@@ -68,7 +68,7 @@ async function joinImagesFromBuffer(validBuffers: Buffer<ArrayBufferLike>[]) {
     
     const slices: Array<Buffer<ArrayBufferLike>> = [];
     let lastIndex: number = 0;
-    let columns = compressedBuffers.length > 18 ? /*Math.ceil(compressedBuffers.length/4)*/getColumn(compressedBuffers.length) : 4;
+    const columns = compressedBuffers.length > 18 ? /*Math.ceil(compressedBuffers.length/4)*/getColumn(compressedBuffers.length) : 4;
     //let columns = compressedBuffers.length/4;
     for(let i=0; i<compressedBuffers.length; i = i+columns){
       // console.log(i, compressedBuffers.length);
@@ -92,8 +92,7 @@ async function joinImagesFromBuffer(validBuffers: Buffer<ArrayBufferLike>[]) {
 }
 
 export async function GET(
-  req: NextRequest,
-  username: string
+  req: NextRequest
 ) {
   if (req.method === "GET") {
     const username = req.nextUrl.searchParams.get("username");
