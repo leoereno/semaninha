@@ -39,7 +39,7 @@ function getColumn(num: number){
       i++;
   } else{
     //i = 5;
-    while (num % i != i - 1){
+    while (num % i != i - 1 && num % i != i - 3){
       i++;
     }
   }
@@ -71,7 +71,7 @@ async function joinImagesFromBuffer(validBuffers: Buffer<ArrayBufferLike>[]) {
     const columns = compressedBuffers.length > 18 ? /*Math.ceil(compressedBuffers.length/4)*/getColumn(compressedBuffers.length) : 4;
     //let columns = compressedBuffers.length/4;
     for(let i=0; i<compressedBuffers.length; i = i+columns){
-      // console.log(i, compressedBuffers.length);
+      console.log(i, compressedBuffers.length);
       if(i+columns-1 > compressedBuffers.length - 1) lastIndex = compressedBuffers.length
       else lastIndex = i+columns
       const row = await joinImages(compressedBuffers.slice(i, lastIndex), {
@@ -135,8 +135,21 @@ export async function GET(
           const description = new JSDOM(
             item.querySelector("description")!.innerHTML
           );
-          const posterUrl =
-            description.window.document.querySelector("img")!.src;
+          
+          let posterUrl: string | null = "";
+
+          // if(description.window.document.querySelector("img")!.src){
+          //   const posterUrl =
+          //     description.window.document.querySelector("img")!.src;
+          // } else{
+          //   posterUrl = null;
+          // }
+          
+          try{
+            posterUrl = description.window.document.querySelector("img")!.src
+          }catch{
+            posterUrl = "";
+          }
 
           const id = index;
           
