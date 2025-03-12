@@ -46,7 +46,7 @@ function getColumn(num: number){
   return i;
 }
 
-async function compressImage(img: Buffer<any>, ratio: number = 0.5){
+async function compressImage(img: Buffer<ArrayBufferLike>){
   const compressedImage = await sharp(img).resize(300, 450, {
     fit: 'cover'
   }).jpeg({quality: 80})
@@ -55,7 +55,7 @@ async function compressImage(img: Buffer<any>, ratio: number = 0.5){
   return compressedImage;
 }
 
-async function joinImagesFromBuffer(validBuffers: Buffer<any>[]) {
+async function joinImagesFromBuffer(validBuffers: Buffer<ArrayBufferLike>[]) {
 
   let img: sharp.Sharp | undefined = undefined;
   const compressedBuffers = await Promise.all(validBuffers.map(compressImage));
@@ -64,9 +64,9 @@ async function joinImagesFromBuffer(validBuffers: Buffer<any>[]) {
         direction: 'horizontal'
       });
   } else{
-    const evenSize = compressedBuffers.length % 2 == 0;
+    //const evenSize = compressedBuffers.length % 2 == 0;
     
-    let slices: Array<Buffer<any>> = [];
+    const slices: Array<Buffer<ArrayBufferLike>> = [];
     let lastIndex: number = 0;
     let columns = compressedBuffers.length > 18 ? /*Math.ceil(compressedBuffers.length/4)*/getColumn(compressedBuffers.length) : 4;
     //let columns = compressedBuffers.length/4;
@@ -74,11 +74,11 @@ async function joinImagesFromBuffer(validBuffers: Buffer<any>[]) {
       // console.log(i, compressedBuffers.length);
       if(i+columns-1 > compressedBuffers.length - 1) lastIndex = compressedBuffers.length
       else lastIndex = i+columns
-      let row = await joinImages(compressedBuffers.slice(i, lastIndex), {
+      const row = await joinImages(compressedBuffers.slice(i, lastIndex), {
         direction:'horizontal'
       });
-      let rowJpg = row.jpeg();
-      let rowBuffer = await rowJpg.toBuffer();
+      const rowJpg = row.jpeg();
+      const rowBuffer = await rowJpg.toBuffer();
       slices.push(rowBuffer);
     }
     img = await joinImages(slices, {
@@ -93,7 +93,6 @@ async function joinImagesFromBuffer(validBuffers: Buffer<any>[]) {
 
 export async function GET(
   req: NextRequest,
-  res: NextResponse<ResponseData>,
   username: string
 ) {
   if (req.method === "GET") {

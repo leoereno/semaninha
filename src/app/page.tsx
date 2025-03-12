@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Movie } from "./api/latestMovies/route";
 
 export default function Home() {
-  const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [username, setUsername] = useState<string>("");
   const [joinedImage, setJoinedImage] = useState<string>("");
@@ -21,7 +20,6 @@ export default function Home() {
         setError(false);
       } else {
         setResultUsername(data.username);
-        setMovies(data.movies);
         setJoinedImage(data.dataURI);
       }
     }
@@ -36,7 +34,7 @@ export default function Home() {
 
   return (
     <>
-      <h1 className="text-3xl text-white text-center m-6">KinoCap</h1>
+      <h1 className="text-3xl text-white text-center m-6">BoxdCap</h1>
       {!joinedImage && !loading && (
         <div className="flex flex-col items-center m-12 transition duration-300 ease-in-out">
           <input

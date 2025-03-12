@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "KinoCap - Monthly movie tile recap",
+  title: "BoxdCap - Monthly movie tile recap",
   description: "Generate your monthly movies tile recap",
 };
 
