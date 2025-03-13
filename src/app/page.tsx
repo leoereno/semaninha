@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import coverBg from '../../public/cover.jpg';
 import Footer from "@/components/ui/Footer";
 
 export default function Home() {
