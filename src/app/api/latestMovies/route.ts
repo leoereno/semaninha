@@ -35,8 +35,10 @@ function getColumn(num: number){
   if(num > 28)
     i = 7;
   if(isEven){
-    while(num % i != 0 && (i != num/i))
+    while((num % i != 0 && (i != num/i)) && !(i >= 6 && num % i > Math.floor(num / i))){
+      //console.log('i=' + i);
       i++;
+    }
   } else{
     //i = 5;
     while (num % i != i - 1 && num % i != i - 3){
@@ -71,7 +73,7 @@ async function joinImagesFromBuffer(validBuffers: Buffer<ArrayBufferLike>[]) {
     const columns = compressedBuffers.length > 18 ? /*Math.ceil(compressedBuffers.length/4)*/getColumn(compressedBuffers.length) : 4;
     //let columns = compressedBuffers.length/4;
     for(let i=0; i<compressedBuffers.length; i = i+columns){
-      console.log(i, compressedBuffers.length);
+      //console.log(i, compressedBuffers.length);
       if(i+columns-1 > compressedBuffers.length - 1) lastIndex = compressedBuffers.length
       else lastIndex = i+columns
       const row = await joinImages(compressedBuffers.slice(i, lastIndex), {
@@ -168,9 +170,14 @@ export async function GET(
       //JOINING IMAGES
       const imageBuffers = await Promise.all(imagesUrl.map(downloadImageAsBuffer))
       const validBuffers = imageBuffers.filter(buffer => buffer !== null)
-      const joinedImage = await joinImagesFromBuffer(validBuffers);
-      const base64 = joinedImage.toString('base64');
-      const dataURI = `data:image/jpeg;base64,${base64}`;
+
+      let dataURI: string = '';
+
+      if(validBuffers.length != 0){
+        const joinedImage = await joinImagesFromBuffer(validBuffers);
+        const base64 = joinedImage.toString('base64');
+        dataURI = `data:image/jpeg;base64,${base64}`;
+      }
 
       return Response.json({ movies: movies, dataURI: dataURI, username: username });
     } catch (error) {
