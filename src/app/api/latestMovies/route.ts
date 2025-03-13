@@ -12,13 +12,6 @@ export type Movie = {
   posterUrl: string;
 };
 
-// type ResponseData = {
-//   movies?: Movie[];
-//   message?: string;
-//   dataUri?: string;
-//   username?: string;
-// };
-
 async function downloadImageAsBuffer(url: string) {
   try {
     const response = await axios.get(url, { responseType: "arraybuffer" });
@@ -29,23 +22,23 @@ async function downloadImageAsBuffer(url: string) {
   }
 }
 
-function getColumn(num: number){
-  const isEven = num % 2 == 0;
-  let i = 5;
-  if(num > 28)
-    i = 7;
+function getColumn(movieCount: number){
+  const isEven = movieCount % 2 == 0;
+  let columnSize = 6;
+  if(movieCount > 28)
+    columnSize = 7;
   if(isEven){
-    while((num % i != 0 && (i != num/i)) && !(i >= 6 && num % i > Math.floor(num / i))){
-      //console.log('i=' + i);
-      i++;
+    while((movieCount % columnSize != 0 && (columnSize != movieCount/columnSize)) && !(columnSize >= 6 && movieCount % columnSize > Math.floor(movieCount / columnSize))){
+      //console.log('columnSize=' + columnSize);
+      columnSize++;
     }
   } else{
-    //i = 5;
-    while (num % i != i - 1 && num % i != i - 3){
-      i++;
+    //columnSize = 5;
+    while (movieCount % columnSize != columnSize - 1 && movieCount % columnSize != columnSize - 3){
+      columnSize++;
     }
   }
-  return i;
+  return columnSize;
 }
 
 async function compressImage(img: Buffer<ArrayBufferLike>){
@@ -101,8 +94,8 @@ export async function GET(
     const movieCount = Number(req.nextUrl.searchParams.get("movieCount")) || 30;
     const timeSpanInDays =
       Number(req.nextUrl.searchParams.get("timeSpan")) || 30;
+    const isMonthly:boolean = (req.nextUrl.searchParams.get("monthly") == "true");
     const feedUrl = `https://letterboxd.com/${username}/rss/`;
-
     try {
       const response = await fetch(feedUrl);
       if (!response.ok) {
@@ -120,11 +113,6 @@ export async function GET(
 
       items.forEach((item, index) => {
         if (index < movieCount) {
-          // const title = item
-          //   .querySelector("title")!
-          //   .textContent?.split("-")
-          //   .slice(0, -1)
-          //   .join(" ");
 
             const title = item
             .querySelector("title")!.textContent;
@@ -159,7 +147,8 @@ export async function GET(
             (new Date().getTime() - pubDate.getTime()) /
             (1000 * 60 * 60 * 24) <=
             timeSpanInDays &&
-            !movies.some((e) => e.title === title)
+            !movies.some((e) => e.title === title) ||
+            !isMonthly
           ){
             imagesUrl.push(posterUrl);
             movies.push({ title, link, pubDate, id, posterUrl });
@@ -177,9 +166,9 @@ export async function GET(
         const joinedImage = await joinImagesFromBuffer(validBuffers);
         const base64 = joinedImage.toString('base64');
         dataURI = `data:image/jpeg;base64,${base64}`;
+        return Response.json({ movies: movies, dataURI: dataURI, username: username });
       }
-
-      return Response.json({ movies: movies, dataURI: dataURI, username: username });
+      return Response.json({ movies: [], dataURI: '', username: username})
     } catch (error) {
       console.error(error);
       return Response.json({ movies: [], message: "Internal Error" });
