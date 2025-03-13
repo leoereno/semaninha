@@ -2,7 +2,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import Footer from "@/components/ui/Footer";
-import { Movie } from "./api/latestMovies/route";
 
 export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
