@@ -7,7 +7,6 @@ import { Movie } from "./api/latestMovies/route";
 export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const [username, setUsername] = useState<string>("");
-  const [movies, setMovies] = useState<Array<Movie>>([])
   const [joinedImage, setJoinedImage] = useState<string>("");
   const [resultUsername, setResultUsername] = useState<string>("");
   const [monthly, setMonthly] = useState<boolean>(true);
@@ -26,7 +25,6 @@ export default function Home() {
         alert(`${data.username} has no movies logged for the time period!`)
       }
        else {
-        setMovies(data.movies);
         setResultUsername(data.username);
         setJoinedImage(data.dataURI);
       }
