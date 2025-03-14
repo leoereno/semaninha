@@ -38,7 +38,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen justify-between p-4 gap-1">
+    <div className="flex flex-col min-h-screen justify-between p-4 gap-1 max-h-svh overflow-hidden">
       <h1 className="text-3xl text-white text-center font-thin">BoxdCap</h1>
       {!joinedImage && !loading && (
         <div
@@ -77,21 +77,21 @@ export default function Home() {
       <div>
         {loading && <p className="text-gray-400 text-center">Loading...</p>}
         {joinedImage != "" && !loading && (
-          <div className="flex flex-col items-center justify-center mt-6 shrink">
+          <div className="flex flex-col items-center justify-center mt-6 shrink max-h-1/6">
             <p className="text-white">
               Last month for <b>{resultUsername}</b>
             </p>
             <Image
               src={joinedImage}
               alt="Movie tiles recap"
-              width={250}
+              width={350}
               height={400}
-              className="p-4 shadow-2xl"
+              className="p-4 shadow-2xl shrink 2xl:w-2xl"
             />
             <a
               download={"month.jpg"}
               href={joinedImage}
-              className="text-gray-300 text-sm mb-5"
+              className="text-gray-300 text-sm mb-5 hover:text-gray-100 transition duration-100"
               title="Download"
             >
               Download

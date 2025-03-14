@@ -127,13 +127,6 @@ export async function GET(
           );
           
           let posterUrl: string | null = "";
-
-          // if(description.window.document.querySelector("img")!.src){
-          //   const posterUrl =
-          //     description.window.document.querySelector("img")!.src;
-          // } else{
-          //   posterUrl = null;
-          // }
           
           try{
             posterUrl = description.window.document.querySelector("img")!.src
