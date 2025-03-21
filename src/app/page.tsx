@@ -95,7 +95,7 @@ export default function Home() {
         {joinedImage != "" && !loading && (
           <div className="flex flex-col items-center justify-center mt-6 shrink max-h-1/6">
             <p className="text-white">
-              Last month for <b>{resultUsername}</b>
+              {monthly ? `Last month ` : `#LastFourWatched ` }for<b> {resultUsername}</b>
             </p>
             <Image
               src={joinedImage}
