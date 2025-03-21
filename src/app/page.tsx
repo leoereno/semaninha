@@ -9,21 +9,21 @@ export default function Home() {
   const [joinedImage, setJoinedImage] = useState<string>("");
   const [resultUsername, setResultUsername] = useState<string>("");
   const [monthly, setMonthly] = useState<boolean>(true);
+  const [lastFour, setLastFour] = useState<boolean>(false);
 
   const handleClick = async () => {
     setLoading(true);
-    console.log(`/api/latestMovies?username=${username}&monthly=${monthly}`)
+    console.log(`/api/latestMovies?username=${username}&monthly=${monthly}`);
     const response = await fetch(
-      `/api/latestMovies?username=${username}&monthly=${monthly}`
+      `/api/latestMovies?username=${username}&monthly=${monthly}&movieCount=${lastFour ? '4' : ''}`
     );
     if (response) {
       const data = await response.json();
       if (data.message != undefined) {
         alert("Error fetching user data! Please check username and try again.");
-      } else if(data.movies.length < 1) {
-        alert(`${data.username} has no movies logged for the time period!`)
-      }
-       else {
+      } else if (data.movies.length < 1) {
+        alert(`${data.username} has no movies logged for the time period!`);
+      } else {
         setResultUsername(data.username);
         setJoinedImage(data.dataURI);
       }
@@ -36,6 +36,7 @@ export default function Home() {
     setResultUsername("");
     setUsername("");
   };
+
 
   return (
     <div className="flex flex-col min-h-screen justify-between p-4 gap-1 max-h-svh overflow-hidden">
@@ -52,17 +53,32 @@ export default function Home() {
             value={username}
             className="focus:outline-0 border-b-1 text-center text-white text-xl p-2 pt-4"
           />
-          <div className="text-white flex content-center justify-center">
-            <input
-              type="checkbox"
-              name="Monthly?"
-              id=""
-              checked={monthly}
-              onChange={() => setMonthly(!monthly)}
-              value={"Monthly?"}
-              className="mt-4 mb-4 mr-2 ml-2 p-2 text-white transition duration-100 rounded-md checked:border-0"
-            />
-            <p className="content-center text-sm font-thin">Monthly?</p>
+          <div className="text-white flex content-center justify-center flex-col">
+            <div className="flex">
+              <input
+                type="checkbox"
+                name="Monthly?"
+                id=""
+                checked={monthly}
+                onChange={() => {setMonthly(!monthly); setLastFour(false)}}
+                value={"Monthly?"}
+                className="mt-4 mb-4 mr-2 ml-2 p-2 text-white transition duration-100 rounded-md checked:border-0"
+              />
+              <p className="content-center text-sm font-thin">Last 30 days</p>
+            </div>
+
+            <div className="flex">
+              <input
+                type="checkbox"
+                name="Last 4 watched?"
+                id=""
+                checked={lastFour}
+                onChange={() => {setLastFour(!lastFour); setMonthly(false)}}
+                value={"Monthly?"}
+                className="mt-4 mb-4 mr-2 ml-2 p-2 text-white transition duration-100 rounded-md checked:border-0"
+              />
+              <p className="content-center text-sm font-thin">Last 4 watched</p>
+            </div>
           </div>
           {!loading && (
             <button

@@ -91,9 +91,9 @@ export async function GET(
 ) {
   if (req.method === "GET") {
     const username = req.nextUrl.searchParams.get("username");
-    const movieCount = Number(req.nextUrl.searchParams.get("movieCount")) || 30;
+    const movieCount = Number(req.nextUrl.searchParams.get("movieCount")) ? Number(req.nextUrl.searchParams.get("movieCount")) : 30;
     const timeSpanInDays =
-      Number(req.nextUrl.searchParams.get("timeSpan")) || 30;
+      Number(req.nextUrl.searchParams.get("timeSpan")) ? Number(req.nextUrl.searchParams.get("timeSpan")) : 30;
     const isMonthly:boolean = (req.nextUrl.searchParams.get("monthly") == "true");
     const feedUrl = `https://letterboxd.com/${username}/rss/`;
     try {
@@ -141,7 +141,7 @@ export async function GET(
             (1000 * 60 * 60 * 24) <=
             timeSpanInDays &&
             !movies.some((e) => e.title === title) ||
-            !isMonthly
+            (!isMonthly)
           ){
             imagesUrl.push(posterUrl);
             movies.push({ title, link, pubDate, id, posterUrl });
