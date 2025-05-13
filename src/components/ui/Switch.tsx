@@ -1,19 +1,23 @@
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { UsernameContext } from "@/app/page";
+import { useContext } from "react";
 
-interface SwitchProps {
-    checked: boolean;
-    onChange: Dispatch<SetStateAction<boolean>>;
-}
+export default function Switch(){
 
-export default function Switch({checked, onChange} : SwitchProps){
+    const userContext = useContext(UsernameContext);
     return(
-    <label className="switch">
-        <input
-            type="checkbox"
-            checked={checked}
-            onChange={e => onChange(e.target.checked)}
-        />
-        <span className="slider"></span>
-    </label>
-    )
+        <div className="flex rounded-lg overflow-hidden border border-gray-600 bg-gray-900 w-full">
+            <button className={`px-8 py-3 text-base font-medium transition-colors duration-200
+                ${userContext?.formLast30Days
+                    ? "bg-white text-black"
+                    : "bg-darker text-white hover:bg-darkgray"
+                } focus:outline-none cursor-pointer w-1/2`}
+                onClick={() => userContext?.setFormLast30Days(true)}><b>30 days</b></button>
+            <button className={`px-8 py-3 text-base font-medium transition-colors duration-200
+                ${!userContext?.formLast30Days
+                    ? "bg-white text-black"
+                    : "bg-darker text-white hover:bg-darkgray"
+                } focus:outline-none cursor-pointer w-1/2`}
+                onClick={() => userContext?.setFormLast30Days(false)}><b>30 movies</b></button>
+        </div>
+    );
 }

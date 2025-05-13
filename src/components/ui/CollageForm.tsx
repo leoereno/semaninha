@@ -1,22 +1,29 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Switch from "./Switch";
+import { UsernameContext } from "@/app/page";
+import Modal from "./Modal";
 
 export default function CollageForm(){
-
-    const [checked, setChecked] = useState<boolean>(false);
-
+    const userContext = useContext(UsernameContext);
     return(
-        <div className="bg-darker text-white text-left flex flex-col gap-4 items-start rounded-xl self-center font-nunito p-12 pr-8 pl-8">
+        <Modal>
             <h2 className="text-3xl mb-2"><b>Collage Generator</b></h2>
             <div className="flex flex-col gap-4">
-                <label htmlFor="" className="text-sm">Enter your Letterboxd username</label>
-                <input type="text" name="" id="" placeholder="Type here" className="text-2xl border-2 rounded-lg p-2"/>
-                <label className="text-sm">Select range</label>
+                <label htmlFor="" className="text-sm"><b>Enter your Letterboxd username</b></label>
+                <input 
+                    type="text" 
+                    name="" 
+                    id="" 
+                    placeholder="Type here" 
+                    className="text-2xl border-2 rounded-lg p-2 focus:outline-none"
+                    onChange={(e) => userContext!.setUsername(e.target.value)}
+                    />
+                <label className="text-sm"><b>Select range</b></label>
                 <div>
-                    <Switch onChange={setChecked} checked={checked}/>
-                    <span>{checked ? 'On' : 'Off'}</span>
+                    <Switch />      
                 </div>
             </div>
-        </div>
+            <button className="bg-primarygreen rounded-md p-4 text-white self-center w-full cursor-pointer mt-2"><b>Generate</b></button>
+        </Modal>
     );
 }

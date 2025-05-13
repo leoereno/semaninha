@@ -5,7 +5,7 @@ export default function Footer(){
                 <a href="https://github.com/leoereno" className="text-white hover:text-gray-300" target="_blank">Github</a>
                 <a href="https://x.com/leoereno" className="text-white hover:text-gray-300" target="_blank">X/Twitter</a>
             </div>
-            <p className="text-white text-center text-sm">Copyright <span className="text-gray">©</span> Leonardo Ereno {new Date().getFullYear()}</p>
+            <p className="text-white text-center text-sm">Copyright <span className="text-gray">©</span> CamisapoloTECH {new Date().getFullYear()}</p>
         </footer>
     );
 }
