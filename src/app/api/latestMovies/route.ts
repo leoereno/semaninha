@@ -92,6 +92,7 @@ export async function GET(
   if (req.method === "GET") {
     const username = req.nextUrl.searchParams.get("username");
     const movieCount = Number(req.nextUrl.searchParams.get("movieCount")) ? Number(req.nextUrl.searchParams.get("movieCount")) : 30;
+    console.log(movieCount)
     const timeSpanInDays =
       Number(req.nextUrl.searchParams.get("timeSpan")) ? Number(req.nextUrl.searchParams.get("timeSpan")) : 30;
     const isMonthly:boolean = (req.nextUrl.searchParams.get("monthly") == "true");
@@ -148,7 +149,7 @@ export async function GET(
           }
         }
       });
-      // console.log(movies)
+      console.log(movies)
       //JOINING IMAGES
       const imageBuffers = await Promise.all(imagesUrl.map(downloadImageAsBuffer))
       const validBuffers = imageBuffers.filter(buffer => buffer !== null)

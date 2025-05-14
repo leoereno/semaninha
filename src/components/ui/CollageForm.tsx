@@ -1,7 +1,9 @@
+'use client'
 import { useContext, useState } from "react";
 import Switch from "./Switch";
 import { UsernameContext } from "@/app/page";
 import ContentBoard from "./ContentBoard";
+import Link from "next/link";
 
 export default function CollageForm(){
     const userContext = useContext(UsernameContext);
@@ -24,6 +26,7 @@ export default function CollageForm(){
                 </div>
             </div>
             <button className="bg-primarygreen rounded-md p-4 text-white self-center w-full cursor-pointer mt-2"><b>Generate</b></button>
+            <Link href={'/'}>Back</Link>
         </ContentBoard>
     );
 }
