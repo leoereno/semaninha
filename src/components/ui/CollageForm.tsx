@@ -1,12 +1,12 @@
 import { useContext, useState } from "react";
 import Switch from "./Switch";
 import { UsernameContext } from "@/app/page";
-import Modal from "./Modal";
+import ContentBoard from "./ContentBoard";
 
 export default function CollageForm(){
     const userContext = useContext(UsernameContext);
     return(
-        <Modal>
+        <ContentBoard>
             <h2 className="text-3xl mb-2"><b>Collage Generator</b></h2>
             <div className="flex flex-col gap-4">
                 <label htmlFor="" className="text-sm"><b>Enter your Letterboxd username</b></label>
@@ -24,6 +24,6 @@ export default function CollageForm(){
                 </div>
             </div>
             <button className="bg-primarygreen rounded-md p-4 text-white self-center w-full cursor-pointer mt-2"><b>Generate</b></button>
-        </Modal>
+        </ContentBoard>
     );
 }

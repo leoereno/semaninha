@@ -15,7 +15,7 @@
 }
 
 .bg-main{
-    background-image: url('../../public/frame.jpg');
+    background-image: url('../../public/frame.png');
     background-size: cover;
     background-position: center;
 }

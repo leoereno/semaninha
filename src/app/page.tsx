@@ -6,6 +6,7 @@ import Header from "@/components/ui/Header";
 import Welcome from "@/components/ui/Welcome";
 import CollageForm from "@/components/ui/CollageForm";
 import CollageDisplay from "@/components/ui/CollageDisplay";
+import Modal from "@/components/ui/Modal";
 
 interface UsernameContextProps {
   username: string;
@@ -25,6 +26,7 @@ export default function Home() {
   const [monthly, setMonthly] = useState<boolean>(true);
   const [lastFour, setLastFour] = useState<boolean>(false);
   const [formLast30Days, setFormLast30Days] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState(true);
 
   
 
@@ -57,11 +59,20 @@ export default function Home() {
   
 
   return (
-    <div className="flex flex-col min-h-screen justify-between gap-1 bg-darkgray bg-main max-h-svh overflow-hidden bg-blend-multiply">
+    <div className="flex flex-col min-h-screen justify-between gap-1 bg-darkgray bg-main max-h-svh overflow-hidden">
         <Header />
         <UsernameContext.Provider value={{username, setUsername, formLast30Days, setFormLast30Days}}>
           {/* <CollageForm /> */}
           <CollageDisplay />
+          <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+            <h3 className="text-lg font-bold">About Us</h3>
+            <div className="text-md flex flex-col gap-2">
+              <p>BoxdCap is developed and maintened by Camisapolo TECH</p>
+              <p>Camisapolo TECH is: </p>
+              <p>Arthur Esmitiz - Interface design & UX</p>
+              <p>Leonardo Ereno - Programming</p>
+            </div>
+          </Modal>
         </UsernameContext.Provider>
         {/* <Welcome /> */}
 
