@@ -1,8 +1,9 @@
 'use client'
 import Image from "next/image";
 import logo from "../../../public/logo.svg";
-import { ModalContext } from "@/app/page";
+
 import { useContext } from "react";
+import { ModalContext } from "@/context/context";
 
 export default function Header() {
 
@@ -17,7 +18,7 @@ export default function Header() {
                     <b>BoxdCap</b>
                 </a>
             </div>
-            <div className="flex justify-between gap-12">
+            <div className="hidden md:flex md:justify-between md:gap-12">
                 <a href="#">Home</a>
                 <a href="#" onClick={() => modalContext?.setShowModal(true)}>What's new</a>
                 <a href="#" onClick={() => modalContext?.setShowModal(true)}>About us</a>

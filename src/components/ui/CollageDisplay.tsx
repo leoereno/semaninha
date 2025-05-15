@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import ContentBoard from "./ContentBoard";
-import { UsernameContext } from "@/app/page";
 import FormButton from "./FormButton";
 import testResult from '../../../public/test-result.jpg';
 import Image from "next/image";
+import { UsernameContext } from "@/context/context";
 
 
 
