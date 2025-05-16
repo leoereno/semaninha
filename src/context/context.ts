@@ -19,8 +19,14 @@ export interface SetpContextProps {
   setStep: Dispatch<SetStateAction<step>>;
 }
 
+export interface CollageContextProps {
+    base64Image: string;
+    setBase64Image: Dispatch<SetStateAction<string>>
+}
+
 export const UsernameContext = createContext<UsernameContextProps | null>(null);
 export const MoviesLast30Days = createContext<boolean>(false);
 export const ModalContext = createContext<ModalContextProps | null>(null);
 export const StepContext = createContext<SetpContextProps | null>(null);
+export const CollageContext = createContext<CollageContextProps | undefined>(undefined);
 
